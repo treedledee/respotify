@@ -11,11 +11,13 @@ class App extends React.Component {
     this.state = ({
       albums: [],
       tracks: [],
+      currentPreview: null,
     });
     this.getAlbums = this.getAlbums.bind(this);
     this.processAlbums = this.processAlbums.bind(this);
     this.getTracks = this.getTracks.bind(this);
     this.processTracks = this.processTracks.bind(this);
+    this.playPreview = this.playPreview.bind(this);
   }
 
   getAlbums(artist) {
@@ -39,12 +41,26 @@ class App extends React.Component {
     });
   }
 
+  playPreview(previewUrl) {
+    if (this.state.currentPreview) {
+      const curAudioObject = this.state.currentPreview;
+      curAudioObject.pause();
+    }
+ 
+    const newAudioObject = new Audio(previewUrl);
+    this.setState({
+      currentPreview: newAudioObject,
+    });
+ 
+    newAudioObject.play();
+  }
+
   render() {
     return (
       <div>
         <SearchBar getAlbums={this.getAlbums} />
         <AlbumList albums={this.state.albums} getTracks={this.getTracks} />
-        <TrackList tracks={this.state.tracks} />
+        <TrackList tracks={this.state.tracks} playPreview={this.playPreview} />
       </div>
     );
   }
